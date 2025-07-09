@@ -1,0 +1,219 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=${SUBDOMAIN}.${DOMAIN_NAME}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - NODE_ENV=production
+      - WEBHOOK_URL=http://${SUBDOMAIN}.${DOMAIN_NAME}/
+      - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=${N8N_POSTGRES_DB}
+      - DB_POSTGRESDB_USER=${N8N_POSTGRES_USER}
+      - DB_POSTGRESDB_PASSWORD=${N8N_POSTGRES_PASSWORD}
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  chatwoot:
+    image: 'ghcr.io/fazer-ai/chatwoot:latest'
+    container_name: chatwoot
+    pull_policy: always
+    volumes:
+      - 'storage:/app/storage'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      - RAILS_ENV=production
+      - INSTALLATION_ENV=docker
+      - DEFAULT_LOCALE=pt_BR
+      - FRONTEND_URL=${FRONTEND_URL}
+      - INTERNAL_HOST_URL=http://chatwoot:3000
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USERNAME=${CHATWOOT_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${CHATWOOT_POSTGRES_PASSWORD}
+      - POSTGRES_DATABASE=${CHATWOOT_POSTGRES_DB}
+      - SECRET_KEY_BASE=${SERVICE_PASSWORD_64_SECRETKEYBASE}
+      - REDIS_URL=redis://redis:6379
+      - REDIS_PASSWORD=${SERVICE_PASSWORD_REDIS}
+      - BAILEYS_PROVIDER_DEFAULT_CLIENT_NAME=${BAILEYS_PROVIDER_DEFAULT_CLIENT_NAME}
+      - BAILEYS_PROVIDER_DEFAULT_URL=http://baileys-api:3025
+      - BAILEYS_PROVIDER_DEFAULT_API_KEY=${SERVICE_PASSWORD_64_BAILEYSDEFAULTAPIKEY}
+      - BAILEYS_PROVIDER_USE_INTERNAL_HOST_URL=true
+    entrypoint: docker/entrypoints/rails.sh
+    command:
+      - bundle
+      - exec
+      - rails
+      - s
+      - '-p'
+      - '3000'
+      - '-b'
+      - 0.0.0.0
+    restart: always
+    ports:
+      - '3000:3000'
+    post_start:
+      - command:
+        - bundle
+        - exec
+        - rails
+        - db:chatwoot_prepare
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'wget -qO- http://127.0.0.1:3000/'
+      interval: 60s
+      timeout: 20s
+      retries: 10
+
+  sidekiq:
+    image: 'ghcr.io/fazer-ai/chatwoot:latest'
+    pull_policy: always
+    volumes:
+      - 'storage:/app/storage'
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - NODE_ENV=production
+      - RAILS_ENV=production
+      - INSTALLATION_ENV=docker
+      - FRONTEND_URL=${FRONTEND_URL}
+      - INTERNAL_HOST_URL=http://rails:3000
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USERNAME=${CHATWOOT_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${CHATWOOT_POSTGRES_PASSWORD}
+      - POSTGRES_DATABASE=${CHATWOOT_POSTGRES_DB}
+      - SECRET_KEY_BASE=${SERVICE_PASSWORD_64_SECRETKEYBASE}
+      - REDIS_URL=redis://redis:6379
+      - REDIS_PASSWORD=${SERVICE_PASSWORD_REDIS}
+      - BAILEYS_PROVIDER_DEFAULT_CLIENT_NAME=${BAILEYS_PROVIDER_DEFAULT_CLIENT_NAME}
+      - BAILEYS_PROVIDER_DEFAULT_URL=http://baileys-api:3025
+      - BAILEYS_PROVIDER_DEFAULT_API_KEY=${SERVICE_PASSWORD_64_BAILEYSDEFAULTAPIKEY}
+      - BAILEYS_PROVIDER_USE_INTERNAL_HOST_URL=true
+    command:
+      - bundle
+      - exec
+      - sidekiq
+      - '-C'
+      - config/sidekiq.yml
+    restart: always
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'ps aux | grep [s]idekiq'
+      interval: 20s
+      timeout: 20s
+      retries: 10
+
+  baileys-api:
+    image: "ghcr.io/fazer-ai/baileys-api:latest"
+    container_name: baileys-api
+    pull_policy: always
+    volumes:
+      - "storage:/app/storage"
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://redis:6379
+      - REDIS_PASSWORD=${SERVICE_PASSWORD_REDIS}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - BAILEYS_LOG_LEVEL=${BAILEYS_LOG_LEVEL:-error}
+      - BAILEYS_PROVIDER_DEFAULT_API_KEY=${SERVICE_PASSWORD_64_BAILEYSDEFAULTAPIKEY}
+    command:
+      - sh
+      - "-c"
+      - "bun manage-api-keys create user ${SERVICE_PASSWORD_64_BAILEYSDEFAULTAPIKEY} && bun start"
+    restart: always
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - "wget -qO- http://localhost:3025/status"
+      interval: 20s
+      timeout: 20s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    restart: unless-stopped
+    ports:
+      # Porta para a API S3
+      - "9000:9000"
+      # Porta para a consola web do MinIO
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: postgres_db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - N8N_POSTGRES_DB=${N8N_POSTGRES_DB}
+      - N8N_POSTGRES_USER=${N8N_POSTGRES_USER}
+      - N8N_POSTGRES_PASSWORD=${N8N_POSTGRES_PASSWORD}
+      - CHATWOOT_POSTGRES_DB=${CHATWOOT_POSTGRES_DB}
+      - CHATWOOT_POSTGRES_USER=${CHATWOOT_POSTGRES_USER}
+      - CHATWOOT_POSTGRES_PASSWORD=${CHATWOOT_POSTGRES_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-multiple-dbs.sh:/docker-entrypoint-initdb.d/init-multiple-dbs.sh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: 'redis:alpine'
+    container_name: redis
+    restart: always
+    command: sh -c 'redis-server --requirepass "${SERVICE_PASSWORD_REDIS}"'
+    volumes:
+      - 'redis:/data'
+    environment:
+      - REDIS_PASSWORD=${SERVICE_PASSWORD_REDIS}
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -h localhost -p 6379 -a $$REDIS_PASSWORD ping | grep PONG"]
+      interval: 20s
+      timeout: 20s
+      retries: 10
+
+volumes:
+  storage:
+  postgres_data:
+  redis:
+  n8n_data:
+  minio_data:

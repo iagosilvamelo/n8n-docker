@@ -101,5 +101,3 @@ Com o arquivo `.env` devidamente configurado, inicie todos os serviços em modo 
 ```bash
 docker-compose up -d
 ```
-
-Conecte o PostgreSQL e crie um banco de dados com o nome **n8n** para que a aplicação N8N possa subir. Crie um banco de dados com nome da sua escolha para usar como gestor de histórico da sua agente IA.

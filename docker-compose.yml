@@ -21,6 +21,9 @@ services:
       - DB_POSTGRESDB_PASSWORD=${N8N_POSTGRES_PASSWORD}
     volumes:
       - n8n_data:/home/node/.n8n
+    networks:
+      - internal
+      - proxy
     depends_on:
       postgres:
         condition: service_healthy
@@ -32,6 +35,9 @@ services:
     volumes:
       - 'storage:/app/storage'
       - './storage/cable.yml:/app/config/cable.yml'
+    networks:
+      - internal
+      - proxy
     depends_on:
       postgres:
         condition: service_healthy
@@ -50,7 +56,7 @@ services:
       - POSTGRES_PASSWORD=${CHATWOOT_POSTGRES_PASSWORD}
       - POSTGRES_DATABASE=${CHATWOOT_POSTGRES_DB}
       - SECRET_KEY_BASE=${SERVICE_PASSWORD_64_SECRETKEYBASE}
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://:${SERVICE_PASSWORD_REDIS}@redis:6379
       - REDIS_PASSWORD=${SERVICE_PASSWORD_REDIS}
       - BAILEYS_PROVIDER_DEFAULT_CLIENT_NAME=${BAILEYS_PROVIDER_DEFAULT_CLIENT_NAME}
       - BAILEYS_PROVIDER_DEFAULT_URL=http://baileys-api:3025
@@ -88,6 +94,8 @@ services:
     pull_policy: always
     volumes:
       - 'storage:/app/storage'
+    networks:
+      - internal
     depends_on:
       - postgres
       - redis
@@ -103,7 +111,7 @@ services:
       - POSTGRES_PASSWORD=${CHATWOOT_POSTGRES_PASSWORD}
       - POSTGRES_DATABASE=${CHATWOOT_POSTGRES_DB}
       - SECRET_KEY_BASE=${SERVICE_PASSWORD_64_SECRETKEYBASE}
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://:${SERVICE_PASSWORD_REDIS}@redis:6379
       - REDIS_PASSWORD=${SERVICE_PASSWORD_REDIS}
       - BAILEYS_PROVIDER_DEFAULT_CLIENT_NAME=${BAILEYS_PROVIDER_DEFAULT_CLIENT_NAME}
       - BAILEYS_PROVIDER_DEFAULT_URL=http://baileys-api:3025
@@ -128,11 +136,13 @@ services:
     image: "ghcr.io/fazer-ai/baileys-api:latest"
     container_name: baileys-api
     pull_policy: always
+    networks:
+      - internal
     volumes:
       - "storage:/app/storage"
     environment:
       - NODE_ENV=production
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://:${SERVICE_PASSWORD_REDIS}@redis:6379
       - REDIS_PASSWORD=${SERVICE_PASSWORD_REDIS}
       - LOG_LEVEL=${LOG_LEVEL:-info}
       - BAILEYS_LOG_LEVEL=${BAILEYS_LOG_LEVEL:-error}
@@ -150,31 +160,33 @@ services:
       timeout: 20s
       retries: 10
 
-  minio:
-    image: minio/minio:latest
-    container_name: minio
-    restart: unless-stopped
-    ports:
-      # Porta para a API S3
-      - "9000:9000"
-      # Porta para a consola web do MinIO
-      - "9001:9001"
-    environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
-    volumes:
-      - minio_data:/data
-    command: server /data --console-address ":9001"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 30s
-      timeout: 20s
-      retries: 3
+  # minio:
+  #   image: minio/minio:latest
+  #   container_name: minio
+  #   restart: unless-stopped
+  #   ports:
+  #     # Porta para a API S3
+  #     - "9000:9000"
+  #     # Porta para a consola web do MinIO
+  #     - "9001:9001"
+  #   environment:
+  #     - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+  #     - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+  #   volumes:
+  #     - minio_data:/data
+  #   command: server /data --console-address ":9001"
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+  #     interval: 30s
+  #     timeout: 20s
+  #     retries: 3
 
   postgres:
     image: pgvector/pgvector:pg16
     container_name: postgres_db
     restart: unless-stopped
+    networks:
+      - internal
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -203,6 +215,8 @@ services:
     image: 'redis:alpine'
     container_name: redis
     restart: always
+    networks:
+      - internal
     command: sh -c 'redis-server --requirepass "${SERVICE_PASSWORD_REDIS}"'
     volumes:
       - 'redis:/data'
@@ -219,4 +233,10 @@ volumes:
   postgres_data:
   redis:
   n8n_data:
-  minio_data:
+  # minio_data:
+
+networks:
+  internal:
+    driver: bridge
+  proxy:
+    external: true

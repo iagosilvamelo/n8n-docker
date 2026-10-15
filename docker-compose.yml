@@ -8,10 +8,12 @@ services:
     environment:
       - N8N_HOST=${SUBDOMAIN}.${DOMAIN_NAME}
       - N8N_PORT=5678
-      - N8N_PROTOCOL=http
-      - N8N_SECURE_COOKIE=${N8N_SECURE_COOKIE}
+      - N8N_PROTOCOL=https
+      - N8N_SECURE_COOKIE=${N8N_SECURE_COOKIE:-true}
       - NODE_ENV=production
-      - WEBHOOK_URL=http://${DOMAIN_NAME}/
+      - WEBHOOK_URL=https://${SUBDOMAIN}.${DOMAIN_NAME}/
+      - N8N_WEBHOOK_URL=https://${SUBDOMAIN}.${DOMAIN_NAME}/
+      - N8N_EDITOR_BASE_URL=https://${SUBDOMAIN}.${DOMAIN_NAME}/
       - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
       - DB_TYPE=postgresdb
       - DB_POSTGRESDB_HOST=postgres
@@ -104,7 +106,7 @@ services:
       - RAILS_ENV=production
       - INSTALLATION_ENV=docker
       - FRONTEND_URL=${FRONTEND_URL}
-      - INTERNAL_HOST_URL=http://rails:3000
+      - INTERNAL_HOST_URL=http://chatwoot:3000
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
       - POSTGRES_USERNAME=${CHATWOOT_POSTGRES_USER}

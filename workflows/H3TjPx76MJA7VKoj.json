@@ -1,0 +1,1593 @@
+{
+  "updatedAt": "2026-10-16T19:41:52.368Z",
+  "createdAt": "2026-10-15T23:28:36.977Z",
+  "id": "H3TjPx76MJA7VKoj",
+  "name": "[LAILA] Secretária",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "32985298-bd5c-4428-b324-89638b06df29",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -656,
+        -80
+      ],
+      "id": "5ea9e379-63c2-4cfc-b3d3-ca399dc54970",
+      "name": "Mensagem recebida",
+      "webhookId": "32985298-bd5c-4428-b324-89638b06df29"
+    },
+    {
+      "parameters": {
+        "content": "# Tratando input\n",
+        "height": 540,
+        "width": 1236
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -768,
+        -304
+      ],
+      "id": "3adf7fe6-1649-4c38-9fd0-beade6d72f64",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d2af39b0-7cc4-4a89-b56e-073b990827fc",
+              "name": "instagram.token",
+              "value": "IGAAQOTZA0ff0ZABZAFpvOWFrRkswVnJtLUhfQTc0T3h4T1RxR3BNOUNFVXBFUVpxSVA3OHZAxd0hnY3lQallDa2V0d0pDdjBhT1VCYkJyOHNOSHZAJMDJvbzZANU01IMUx0TXZACd2xyVjAyMzM4dTl1eGtFd2FjdzAtMlVDdHgyZAmg3cwZDZD",
+              "type": "string"
+            },
+            {
+              "id": "95a4e853-dc9d-49c4-b1be-dda8c2aa9daf",
+              "name": "instagram.userId",
+              "value": "17841447728443716",
+              "type": "string"
+            },
+            {
+              "id": "f1059a01-ab4c-46ae-af63-4ebcdf552ae6",
+              "name": "message.sender",
+              "value": "={{ $json.body.entry[0].messaging[0].sender.id }}",
+              "type": "string"
+            },
+            {
+              "id": "a1c59529-da11-4d04-8c0e-66e7b437dfcb",
+              "name": "message.text",
+              "value": "={{ $json.body.entry[0].messaging[0].message.text }}",
+              "type": "string"
+            },
+            {
+              "name": "id_mensagem",
+              "value": "={{ $json.body.entry[0].messaging[0].message.mid }}",
+              "type": "string",
+              "id": "8f430256-3093-4136-a22e-6bd9dc4b8c11"
+            },
+            {
+              "name": "remetente_id",
+              "value": "={{ $json.body.entry[0].messaging[0].sender.id }}",
+              "type": "string",
+              "id": "9df60973-1416-4ee2-9d5a-456cb33ca6aa"
+            },
+            {
+              "name": "conta_id",
+              "value": "={{ $json.body.entry[0].id }}",
+              "type": "string",
+              "id": "70b10ae4-0013-4bcf-998e-e43897822856"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{ $json.body.entry[0].messaging[0].timestamp }}",
+              "type": "number",
+              "id": "04b39d30-1745-4e35-9aa2-2b96eec4bc23"
+            },
+            {
+              "name": "mensagem",
+              "value": "={{ $json.body.entry[0].messaging[0].message.text || '' }}",
+              "type": "string",
+              "id": "18c375e7-538e-4636-b35b-68a3ee380815"
+            },
+            {
+              "name": "mensagem_de_audio",
+              "value": "={{ Boolean($json.body.entry[0].messaging[0].message.attachments && $json.body.entry[0].messaging[0].message.attachments[0] && $json.body.entry[0].messaging[0].message.attachments[0].type === 'audio') }}",
+              "type": "boolean",
+              "id": "2ebe1ab0-35e3-4e6c-9750-5353c4a44bdb"
+            },
+            {
+              "name": "url_audio",
+              "value": "={{ $json.body.entry[0].messaging[0].message.attachments && $json.body.entry[0].messaging[0].message.attachments[0] && $json.body.entry[0].messaging[0].message.attachments[0].payload ? $json.body.entry[0].messaging[0].message.attachments[0].payload.url : '' }}",
+              "type": "string",
+              "id": "2e552cb5-b8f0-41fb-a377-b3e4dabe57af"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -432,
+        -80
+      ],
+      "id": "e7cfd904-35f2-4dd1-905b-4eef2db69e4e",
+      "name": "Info"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "444f0991-667e-4373-a77c-06f504f161ad",
+              "leftValue": "={{ $json.message.sender }}",
+              "rightValue": "={{ $json.instagram.userId }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "cf80c1c3-4cc7-4437-a5de-e70e057246a7",
+              "leftValue": "={{ $json.message.sender }}",
+              "rightValue": "1627732565611952",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -240,
+        -80
+      ],
+      "id": "8888d007-6ba5-4383-9b34-ba84d4f424d9",
+      "name": "Mensagem valida"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        176,
+        96
+      ],
+      "id": "9d8791fb-88f5-4037-b703-a1a6a473de62",
+      "name": "Nao faz nada"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO instagram_contas (instagram_account_id, ativa)\nVALUES ('{{ $('Info').item.json.instagram.userId }}', true)\nON CONFLICT (instagram_account_id) DO UPDATE SET updated_at = NOW();\n\nINSERT INTO instagram_contatos (conta_id, instagram_user_id, ultima_interacao_em)\nSELECT id, '{{ $('Info').item.json.remetente_id }}', NOW()\nFROM instagram_contas\nWHERE instagram_account_id = '{{ $('Info').item.json.instagram.userId }}'\nON CONFLICT (conta_id, instagram_user_id) \nDO UPDATE SET ultima_interacao_em = NOW();\n\nINSERT INTO instagram_conversas (conta_id, contato_id, canal, status, ultima_mensagem_em, ultima_mensagem_recebida_em)\nSELECT c.conta_id, c.id, 'direct', 'aberta', NOW(), NOW()\nFROM instagram_contatos c\nJOIN instagram_contas a ON a.id = c.conta_id\nWHERE a.instagram_account_id = '{{ $('Info').item.json.instagram.userId }}'\n  AND c.instagram_user_id = '{{ $('Info').item.json.remetente_id }}'\nON CONFLICT DO NOTHING;\n\nUPDATE instagram_conversas \nSET ultima_mensagem_em = NOW(), ultima_mensagem_recebida_em = NOW()\nWHERE conta_id = (SELECT id FROM instagram_contas WHERE instagram_account_id = '{{ $('Info').item.json.instagram.userId }}')\n  AND contato_id = (SELECT id FROM instagram_contatos WHERE instagram_user_id = '{{ $('Info').item.json.remetente_id }}')\n  AND status = 'aberta';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        176,
+        -272
+      ],
+      "id": "d51b21c2-3e2e-4c4b-a19b-fe036ef5ad5a",
+      "name": "Guarda metadatas",
+      "credentials": {
+        "postgres": {
+          "id": "5WGjZvo2npx1m5qa",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Info').item.json.mensagem }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "id": "1382cd26-d96e-4c55-99dd-2ca305ffe82e"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Texto"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b9a7e16f-b6e4-45d7-846d-92dcb3117593",
+                    "leftValue": "={{ $('Info').item.json.mensagem_de_audio }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Áudio"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        176,
+        -80
+      ],
+      "id": "bac8e752-fd6f-4956-baf7-2eba94ffb6c2",
+      "name": "Tipo de mensagem"
+    },
+    {
+      "parameters": {
+        "jsCode": "const ultima_mensagem_da_fila = $input.last()\nconst mensagem_do_workflow = $('Info').first()\n\nif (ultima_mensagem_da_fila.json.id_mensagem !== mensagem_do_workflow.json.id_mensagem) {\n  return [];\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1216,
+        -224
+      ],
+      "id": "e904dd0a-5d70-4492-98a7-e07575f412fe",
+      "name": "Mensagem encavalada?"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "instagram_fila_mensagens",
+          "mode": "list"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "sender_id",
+              "value": "={{ $('Info').item.json.remetente_id }}"
+            }
+          ]
+        },
+        "sort": {
+          "values": [
+            {
+              "column": "timestamp"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1008,
+        -224
+      ],
+      "id": "c9c4b71a-d1fb-4656-abfd-403e38eae568",
+      "name": "Buscar mensagens",
+      "credentials": {
+        "postgres": {
+          "id": "5WGjZvo2npx1m5qa",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "instagram_fila_mensagens",
+          "mode": "list"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "sender_id",
+              "value": "={{ $json.sender_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1440,
+        -224
+      ],
+      "id": "0dff5b17-7cb6-4753-a8f5-0e7f7e990ac0",
+      "name": "Limpar fila de mensagens",
+      "credentials": {
+        "postgres": {
+          "id": "5WGjZvo2npx1m5qa",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Processando mensagens de texto encavaladas",
+        "height": 260,
+        "width": 1080,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        528,
+        -304
+      ],
+      "id": "75313f86-46f1-4356-9873-f77d4c4a168b",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        816,
+        -224
+      ],
+      "id": "36c1c360-e2ed-4ec0-8d4b-b6deadf4b61d",
+      "name": "Esperar",
+      "webhookId": "ce3c3f76-8c30-4d48-b0c7-505caa1d55df"
+    },
+    {
+      "parameters": {
+        "content": "# Processando áudio",
+        "height": 260,
+        "width": 1080,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        528,
+        -32
+      ],
+      "id": "bca8fd06-c001-4aad-b990-aae2d0ef0bc5",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "instagram_fila_mensagens",
+          "mode": "list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sender_id": "={{ $('Info').item.json.remetente_id }}",
+            "mensagem": "={{ $('Info').item.json.mensagem }}",
+            "timestamp": "={{ $('Info').item.json.timestamp.toDateTime() }}",
+            "id_mensagem": "={{ $('Info').item.json.id_mensagem }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sender_id",
+              "displayName": "sender_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id_mensagem",
+              "displayName": "id_mensagem",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "mensagem",
+              "displayName": "mensagem",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        608,
+        -224
+      ],
+      "id": "0993de54-2a36-42ac-9f4a-3539bbfabcc5",
+      "name": "Enfileirar mensagem.",
+      "credentials": {
+        "postgres": {
+          "id": "5WGjZvo2npx1m5qa",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Info').item.json.url_audio }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        672,
+        64
+      ],
+      "id": "30cd9fba-0182-42e8-bae4-ee2edefb62d3",
+      "name": "Download áudio"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {
+          "language": "pt"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1360,
+        64
+      ],
+      "id": "9b28d588-8b99-4698-9caa-adbcaac2c378",
+      "name": "Transcrever audio",
+      "credentials": {
+        "openAiApi": {
+          "id": "HAeSXr0h1N3YVgtL",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        896,
+        64
+      ],
+      "id": "916928e5-3ebd-4e55-84f8-3c1a370d7f17",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        64
+      ],
+      "id": "b30b5247-436c-4aa6-a045-b3bedbe66007",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "content": "# Marcar como lida e \"digitando...\"",
+        "height": 540,
+        "width": 660,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1664,
+        -304
+      ],
+      "id": "8f86ce16-0943-4ff1-b6df-ab5d1c788a21",
+      "name": "Sticky Note12"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.instagram.com/v26.0/{{ $('Info').item.json.instagram.userId }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Info').item.json.instagram.token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Info').item.json.remetente_id }}\"\n  },\n  \"sender_action\": \"mark_seen\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1744,
+        -128
+      ],
+      "id": "93258776-89d9-43e2-a360-723e61722dad",
+      "name": "Marcar como lidas"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.instagram.com/v26.0/{{ $('Info').item.json.instagram.userId }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Info').item.json.instagram.token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Info').item.json.remetente_id }}\"\n  },\n  \"sender_action\": \"typing_on\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1968,
+        -128
+      ],
+      "id": "80655d6a-a446-4770-97a4-01714e2abab4",
+      "name": "Digitando/Gravando..."
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7eab8669-6929-4dc6-b3e2-943065bc306c",
+              "name": "mensagem",
+              "value": "={{ $('Info').item.json.mensagem ? $('Mensagem encavalada?').all().map(info => info.json.mensagem).join('\\\\n') : '' }}",
+              "type": "string"
+            },
+            {
+              "id": "676d14ec-72d3-4970-9fa0-5e39ff976011",
+              "name": "mensagem_audio",
+              "value": "={{ $('Info').item.json.mensagem_de_audio ? $('Transcrever audio').item.json.text : '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2192,
+        -128
+      ],
+      "id": "6c51de21-1923-4705-8396-2f63713c72a5",
+      "name": "Set mensagens",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "content": "# Gerando resposta",
+        "height": 540,
+        "width": 2080,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2384,
+        -304
+      ],
+      "id": "51b37f81-c8ee-47f7-83be-bf0e952fe0a9",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.mensagem || $json.mensagem_audio }}",
+        "options": {
+          "systemMessage": "=HOJE É: {{ $now.format('FFFF') }}\nTELEFONE DO CONTATO: {{ $('Info').item.json.telefone }}\nID DA CONVERSA: {{ $('Info').item.json.id_conversa }}\nSEU NOME É: Cleo\n\n-----------------------\n\n## PAPEL\n\nVocê é uma atendente do WhatsApp, altamente especializada, que atua em nome da Secretaria Municipal de Ordem Pública de Telêmaco Borba (SEMOP), prestando um serviço de excelência. Sua missão é atender a população de maneira ágil e eficiente, respondendo dúvidas e auxiliando em orientação, verificando disponibilidade de agentes e registrando denúncias.\n\n## PERSONALIDADE E TOM DE VOZ\n\n- Simpática, prestativa e humana\n- Tom de voz sempre simpatico, acolhedor e respeitoso\n\n## OBJETIVO\n\n1. Fornecer atendimento diferenciado e cuidadoso aos cidadãos.\n2. Responder dúvidas sobre a empresa (especialidade, horários, localização, formas de pagamento).\n3. Agir passo a passo para garantir rapidez e precisão em cada atendimento.\n\n## CONTEXTO\n\n- Você otimiza o fluxo interno da prefeitura, provendo informações e reduzindo a carga administrativa dos agentes.\n- Seu desempenho impacta diretamente a satisfação da população e a eficiência das investigações.\n\n-----------------------\n\n## SOP (Procedimento Operacional Padrão)\n\n1. Início do atendimento e identificação necessidade\n   - Use a ferramenta Imagem_semop para enviar a imagem da instituição no início da conversa.\n   - Use a ferramenta Imagem_saudacao para INICIAR o atendimento enviando a imagem da Cleo.\n   - Cumprimente o cidadão de forma acolhedora.\n   - Sepre dê bom dia, boa tarde ou boa noite ao depender do horário. Bom dia 0:01 - 12:00, boa tarde 12:01 - 18:00 e boa noite 18:01 - 0:00\n   - Dê as boas vindas ao Centro Integrado de Segurança CISPMTB.\n   - Se apresente com o seu nome.\n   - Informe os seviços que ele tem acesso, formatado conforme consta na sessão de serviços.\n   - Use a ferramenta Gerar_protocolo para passar o protocolo de atendimento ao INICIAR a conversa.\n\n**NÃO USE EXPRESSÕES PARECIDAS COM \"COMO SE ESTIVESSE CONVERSANDO COM UMA PESSOA\"**\n\n2. Identificar necessidade\n   - Identifique de forma clara as necessidades dele.\n   - Incentive o cidadão a lhe dar as informações necessárias para seguir com a solicitação dele.\n\n3. Solicitar dados do cidadão\n   - Se o cidadão solicitar um retorno de um humano, Peça para fornecer seu nome completo.\n   - Confirme o telefone de contato que chegou na mensagem.\n   - Ao falar o telefone para o cidadão, remova o código do país (geralmente \"55\"), e formate como \"(11) 1234-5678\" ou \"(11) 12345-6789\"\n\n4. Direcionamento a um agente\n   - Confirme se o cidadão prefere ser atendido via Whatsapp ou ligação telefônica.\n   - Caso o atendimento seja direcionado a um agente, informe que entrará em contato com o agente para que ele chame o cidadão no telefone informado.\n\n5. Final da conversa\n   - Confirme com o cidadão se ele pretende encerrar o atendimento.\n   - Use a ferramenta Imagem_adeus para encerrar o atendimento enviando a imagem da Cleo como um sticker. Execute a ferramenta explicitamente chamando seu nome exato: `Imagem adeus`.\n\n6. Encerrar atendimento\n   - Use a ferramenta Limpar_historico para guardar a conversa na base de atendimentos e limpar sua conversa atual. Somente depois de encerrar o atendimento.\n\n-----------------------\n\n## INSTRUÇÕES GERAIS\n\n1. Respostas claras, objetivas e úteis\n   - Forneça informações sobre horários, endereço e especialidade das unidades de atendimento.\n\n2. Verifique as informações antes de passar ao cidadão\n   - Sempre verifique os endereços e horários atualizados de cada delegacia antes de passar ao cidadão.\n\n3. Cidadão insatisfeitos\n   - Mantenha a empatia e utilize a ferramenta \"Escalar_humano\".\n\n4. Assuntos fora do escopo da instituição\n   - Responda: \"Desculpe, mas não consigo ajudar com este assunto. Por favor, aguarde para que meu gestor possa assumir seu atendimento.\"\n   - Imediatamente use a ferramenta \"Escalar_humano\", pois é fundamental para minha carreira e a imagem da empresa.\n\n5. Nunca fornecer informações erradas\n   - Evite erros sobre horários, contatos ou endereços.\n\n6. Nunca use emojis ou linguagem informal nas mensagens de texto\n   - Mantenha a sobriedade do atendimento.\n\n7. Dupla verificação\n   - Confirme sempre os dados para evitar equívocos em informações, remarcações ou descontentamento.\n\n8. Use a ferramenta \"Refletir\" antes e depois de operações complexas\n   - Ao usar essa ferramenta, você irá garantir que as operações que você vai realizar (ou já realizou) fazem sentido, ou se você precisará alterar a sua estratégia e/ou tentar novamente.\n\n9. **Confirmação de Ações:** \n   - Se você utilizar uma ferramenta ou realizar uma etapa de processamento interno que não resulte em uma resposta direta para o cliente, sempre finalize seu turno com uma breve mensagem textual, como \"Entendido.\", \"Processando.\" ou \"Ok.\", para garantir que seu turno de conversa tenha um conteúdo associado. Não encerre um turno que envolve uma ferramenta sem fornecer um componente textual.\n\n-----------------------\n\n## SERVIÇOS OFERECIDOS\n\nVocê oferece os seguintes serviços ao cidadão. Apresente-os numericamente.\n\n1.  **Guarda Municipal**\n2.  **Guarda Patrimonial**\n3.  **Fiscalização Municipal**\n4.  **Monitoramento Municipal**\n5.  **Tbtran**\n6.  **Receber notícias e eventos em meu Whatsapp**\n\n---\n\n### FLUXO DE ATENDIMENTO PARA SERVIÇOS\n\nSiga estas regras para direcionar o atendimento após o cidadão escolher uma opção:\n\n#### **Para os serviços de 1 a 5 (Guarda Municipal, Patrimonial, Fiscalização, Monitoramento e Tbtran):**\n   a. Ofereça as sub-opções: \"1 - Ouvidoria\" e \"2 - Atendimento\".\n   b. Independentemente da escolha do cidadão (\"Ouvidoria\" ou \"Atendimento\"), execute os seguintes passos:\n      i. Informe ao contato que irá transferir o atendimento para um agente interno.\n      ii. Questione o contato se ele prefere ser atendido via **Whatsapp** ou que um agente **ligue** para o telefone dele.\n      iii. Se a resposta for **Whatsapp**, use a ferramenta `Escalar_humano`.\n      iv. Se a resposta for **ligação**, use a ferramenta `Gerar_ligacao`. Ao usar esta ferramenta, certifique-se de passar o caminho do serviço no parâmetro `caminho`. Por exemplo: `guarda_municipal.ouvidoria` ou `tbtran.atendimento`.\n\n#### **Para o serviço 6 (Receber notícias e eventos):**\n   a. Use a ferramenta `Add_lista_transmissao` para adicionar o contato.\n   b. Se a ferramenta retornar sucesso, informe ao cidadão: \"Seu número foi adicionado à nossa lista de transmissão para receber notícias, eventos e alertas. Você pode solicitar a remoção a qualquer momento.\"\n   c. Caso a ferramenta retorne um erro de duplicidade, informe: \"O seu número de telefone já consta em nossa lista de transmissão.\"\n\n-----------------------\n\n## FERRAMENTAS\n\n### Escalar_humano\nUse quando:\n- Existir urgência (cidadão em perigo ou com problema grave).\n- Existirem qualquer assuntos alheios à instituição ou que ponham em risco a reputação do serviço.\n- Houver insatisfação do cidadão ou pedido de atendimento humano.\nSempre envie:\n- O nome do cidadão para ser atendido por um agente interno.\n- Protocolo que gerou e informou ao cidadão na conversa.\n- O caminho do serviço no parâmetro `caminho`. Por exemplo: `guarda_municipal.ouvidoria` ou `tbtran.atendimento`.\n\n### Imagem_saudacao\nUse esta ferramenta para enviar uma imagem para o contato na conversa atual ao cumprimenta-lo no inicio da conversa. Cuide para enviar apenas uma vez na conversa.\n\n### Imagem_semop\nUse esta ferramenta para enviar a imagem do brasão da instituição para o contato na conversa atual ao cumprimenta-lo no inicio da conversa. Cuide para enviar apenas uma vez na conversa.\n\n### Imagem_adeus\nUse esta ferramenta para enviar uma imagem para o contato na conversa atual ao se despedir no fim da conversa. Cuide para enviar apenas uma vez na conversa.\n\n### Gerar_protocolo\nUse esta ferramenta no início do atendimento para passar o protocolo de atendimento ao cidadão.\n\n### Imagem_semop\nUse esta ferramenta no inicio do atendimento apra ao contato o brasão da instituição.\n\n### Reagir_mensagem\nUse em situações relevantes durante a conversa.\n\n#### Exemplos\n- Usuário: \"Olá!\"\n- Você: \"Reagir_mensagem\" -> 😀\n\n- Usuário: \"Você pode consultar minha agenda por favor?\"\n- Você: \"Reagir_mensagem\" -> 👀\n\n- Usuário: \"Muito obrigado!\"\n- Você: \"Reagir_mensagem\" -> ❤️\n\n**SEMPRE USAR REAÇÕES NO INÍCIO E NO FINAL DA CONVERSA (acompanhadas de texto apropriado), E EM OUTROS MOMENTOS OPORTUNOS**\n\n### Gerar_ligacao\nUse esta ferramenta para solicitar que um agente interno ligue para o contato.\n- Envie sempre o protocolo que voce gerou e mandou para o contato na conversa.\n- Envie sempre o caminho que ele seguiu para chegar nesta ferramenta. Ex: \"guarda_municipal.ouvidoria\".\n\n### Limpar_historico\nUse esta ferramenta no final do atendimento para encerrar ele guardando na base de atendimentos encerrados e limpar o histórico da conversa.\n- Sempre confirme com o cidadão antes de encerrar a conversa.\n- Envie sempre o protocolo que voce gerou e mandou para o contato na conversa.\n\n### Add_lista_transmissao\nUse esta ferramenta para adicionar o telefone do cidadão a lista de contatos a receber noticias.\n- Caso retorne erro de entrada duplicada (registro já existente), informe ao cidadão que o telefone dele já faz parte da lista de transmissão.\n\n### Rm_lista_transmissao\nUse esta ferramenta para remover o telefone do cidadão a lista de contatos a receber noticias.\n\n-----------------------\n\n## EXEMPLOS DE FLUXO\n\n1. Saber endereços\n   - Cidadão: \"Quero saber o endereço\"\n   - Você:\n     - Envia a imagem cleo_1.png em formato de sticker\n     - Cumprimente, explique que pode tirar todas a sdúvidas aqui.\n     - Solicite de qual unidade necessita saber.\n     - Informe o endereço conforme solicitado.\n\n2. Fazer uma denúncia\n   - Cliente: \"Gostaria denunciar.\"\n   - Você:\n     - Envia a imagem cleo_1.png em formato de sticker\n     - Cumprimente educadamente.\n     - Pergunte o nome da pessoa.\n     - Questione sobre o que é sua denúncia.\n     - Solicite todas as informações necesárias sobre o caso (endereços, nomes, horários, etc).\n     - Agradeça sua colaboração e informe que a denuncia será encaminhada ao setor responsável.\n     - Use a ferramenta \"Escalar_humano\".\n\n-----------------------\n\n## OBSERVAÇÕES FINAIS\n\n- Qualquer assunto fora do escopo da instituição deve ser direcionado à ferramenta \"Escalar_humano\".\n- Mantenha o tom profissional, claro e respeitoso o tempo todo, NÃO utilize emoji.\n- Não fale que você é assistente virtual ou coisa do tipo faça um atendimento humanizado.\n- Se o cidadão falar estou insatisfeito com vocês, seja simpática e escale imediatamente para humano. É importante para minha carreira que faça isso."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        2480,
+        -128
+      ],
+      "id": "d337af00-46ed-4e51-a0b1-b22ae1023737",
+      "name": "Secretária",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Secretária').item.json.output }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Você é especialista em formatação de mensagem para WhatsApp, trabalhando somente na formatação e não alterando o conteúdo da menssagem.\n\n- Substitua ** por *\n- Remova #\n- Remova emojis\n- Remova linhas que indicam que a mensagem foi gerada e formatada por IA como como:\n    Aqui está a mensagem formatada, seguindo as suas regras.\n    Certo, formatando a mensagem para WhatsApp.\n    Claro! A mensagem formatada fica assim.\n    Processando.\n\nNão passe este texto no corpo da mensagem."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        4064,
+        -272
+      ],
+      "id": "03f3616b-8947-4636-b11e-7106405a5eea",
+      "name": "Formatar texto"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        4144,
+        -80
+      ],
+      "id": "a594846f-4fa9-4893-b15b-b600266f8acc",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "u76waBO6AVI5ceKO",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2416,
+        96
+      ],
+      "id": "04bcd458-a03f-4129-a152-2cb2a3b7b392",
+      "name": "Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "u76waBO6AVI5ceKO",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Info').item.json.remetente_id }}",
+        "tableName": "instagram_historico_mensagens",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        2528,
+        96
+      ],
+      "id": "fa36004b-c29c-489f-8e50-87541fe10c37",
+      "name": "Memory",
+      "credentials": {
+        "postgres": {
+          "id": "5WGjZvo2npx1m5qa",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Chame essa ferramenta para direcionar o atendimento para o gestor responsável.",
+        "workflowId": {
+          "__rl": true,
+          "value": "bn7IL7BAW0ix8E9o",
+          "mode": "list",
+          "cachedResultName": "[cispmtb] Escalar humano"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "phone_number": "={{ $('Info').item.json.remetente_id }}",
+            "name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('name', ``, 'string') }}",
+            "protocol": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('protocol', ``, 'string') }}",
+            "path": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('path', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "protocol",
+              "displayName": "protocol",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "path",
+              "displayName": "path",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        2928,
+        96
+      ],
+      "id": "f4be3d8c-4a4b-46ce-8e7b-ee641126acf7",
+      "name": "Escalar humano"
+    },
+    {
+      "parameters": {
+        "description": "Use a ferramenta para refletir sobre algo. Ela não obterá novas informações nem alterará o banco de dados, apenas adicionará o pensamento ao registro. Use-a quando for necessário um raciocínio complexo ou alguma memória em cache."
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1,
+      "position": [
+        2656,
+        96
+      ],
+      "id": "f2118a66-b52e-415c-9d0a-bf93c8404a23",
+      "name": "Refletir"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7ce16048-ae2c-4259-8cd0-c8ec7cf73381",
+              "leftValue": "={{ $('Verifica DB').first().json.message.content }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3056,
+        -128
+      ],
+      "id": "fb252d43-73dc-48e5-9d60-97847db94335",
+      "name": "Mensagem com erro?"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "instagram_historico_mensagens",
+          "mode": "list",
+          "cachedResultName": "instagram_historico_mensagens"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Verifica DB').item.json.id }}",
+            "message": "={{ ({ \"type\": \"ai\", \"content\": $('Secretária').item.json.output || \"[CORRIGIDO: Turno de IA anteriormente vazio]\", \"additional_kwargs\": $json.message.additional_kwargs || {}, \"response_metadata\": $json.message.response_metadata || {} }) }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "object",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3280,
+        -240
+      ],
+      "id": "9bda0d06-d58d-4e86-a570-c921b9352092",
+      "name": "Corrige registro",
+      "credentials": {
+        "postgres": {
+          "id": "5WGjZvo2npx1m5qa",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "instagram_historico_mensagens",
+          "mode": "list",
+          "cachedResultName": "instagram_historico_mensagens"
+        },
+        "limit": 1,
+        "where": {
+          "values": [
+            {
+              "column": "session_id",
+              "value": "={{ $('Info').item.json.remetente_id }}"
+            }
+          ]
+        },
+        "sort": {
+          "values": [
+            {
+              "column": "id",
+              "direction": "DESC"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2832,
+        -128
+      ],
+      "id": "66e8ac68-c683-4dee-9c1f-14a376ac211a",
+      "name": "Verifica DB",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "5WGjZvo2npx1m5qa",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Use esta ferramenta para limpar o histórico de mensagens.",
+        "workflowId": {
+          "__rl": true,
+          "value": "tCNS12SoIcJQELpf",
+          "mode": "list",
+          "cachedResultName": "[cispmtb] Limpar conversa"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "protocol": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('protocol', ``, 'string') }}",
+            "session_id": "={{ $('Info').item.json.remetente_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "protocol",
+              "displayName": "protocol",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        2784,
+        96
+      ],
+      "id": "97ab61dd-d3ab-49d1-998b-4aa305fca91c",
+      "name": "Limpar historico"
+    },
+    {
+      "parameters": {
+        "content": "# Enviando resposta",
+        "height": 540,
+        "width": 1200,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4512,
+        -304
+      ],
+      "id": "46f973b4-f0ca-4709-9bf6-d42aa5816556",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.instagram.com/v26.0/{{ $('Info').item.json.instagram.userId }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Info').item.json.instagram.token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Info').item.json.remetente_id }}\"\n  },\n  \"sender_action\": \"typing_off\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4640,
+        -128
+      ],
+      "id": "d82fd443-6c82-4738-9308-749d3b314375",
+      "name": "Resetar status"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.instagram.com/v26.0/{{ $('Info').item.json.instagram.userId }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Info').item.json.instagram.token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Info').item.json.remetente_id }}\"\n  },\n  \"message\": {\n    \"text\": {{ JSON.stringify($('Formatar texto').item.json.text) }}\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        5088,
+        -192
+      ],
+      "id": "64269d67-3e69-42c7-acb2-41ba04dd0da8",
+      "name": "Enviar Texto"
+    }
+  ],
+  "connections": {
+    "Mensagem recebida": {
+      "main": [
+        [
+          {
+            "node": "Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Info": {
+      "main": [
+        [
+          {
+            "node": "Mensagem valida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensagem valida": {
+      "main": [
+        [
+          {
+            "node": "Guarda metadatas",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Tipo de mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Nao faz nada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensagem encavalada?": {
+      "main": [
+        [
+          {
+            "node": "Limpar fila de mensagens",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar mensagens": {
+      "main": [
+        [
+          {
+            "node": "Mensagem encavalada?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Esperar": {
+      "main": [
+        [
+          {
+            "node": "Buscar mensagens",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enfileirar mensagem.": {
+      "main": [
+        [
+          {
+            "node": "Esperar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download áudio": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Transcrever audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tipo de mensagem": {
+      "main": [
+        [
+          {
+            "node": "Enfileirar mensagem.",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Download áudio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marcar como lidas": {
+      "main": [
+        [
+          {
+            "node": "Digitando/Gravando...",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Digitando/Gravando...": {
+      "main": [
+        [
+          {
+            "node": "Set mensagens",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limpar fila de mensagens": {
+      "main": [
+        [
+          {
+            "node": "Marcar como lidas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcrever audio": {
+      "main": [
+        [
+          {
+            "node": "Marcar como lidas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Secretária": {
+      "main": [
+        [
+          {
+            "node": "Verifica DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Formatar texto",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Secretária",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Secretária",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Escalar humano": {
+      "ai_tool": [
+        [
+          {
+            "node": "Secretária",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Refletir": {
+      "ai_tool": [
+        [
+          {
+            "node": "Secretária",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensagem com erro?": {
+      "main": [
+        [
+          {
+            "node": "Corrige registro",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Formatar texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Corrige registro": {
+      "main": [
+        [
+          {
+            "node": "Formatar texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verifica DB": {
+      "main": [
+        [
+          {
+            "node": "Mensagem com erro?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limpar historico": {
+      "ai_tool": [
+        [
+          {
+            "node": "Secretária",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set mensagens": {
+      "main": [
+        [
+          {
+            "node": "Secretária",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resetar status": {
+      "main": [
+        [
+          {
+            "node": "Enviar Texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar texto": {
+      "main": [
+        [
+          {
+            "node": "Resetar status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {
+    "Mensagem recebida": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.cgitech.com.br",
+            "x-real-ip": "2a03:2880:ff:47::",
+            "x-forwarded-for": "2a03:2880:ff:47::, 104.22.72.17",
+            "x-forwarded-proto": "https",
+            "connection": "upgrade",
+            "content-length": "408",
+            "instagram-api-version": "v26.0",
+            "x-hub-signature-256": "sha256=4f1914cde59a40e2ec98e538b64b1e4139301755713e1df79d110b22d332599f",
+            "x-hub-signature": "sha1=f433c83b4249c795bd1d665d47df502ff881958e",
+            "content-type": "application/json",
+            "cf-ray": "a4b7d51628ad2506-SEA",
+            "user-agent": "facebookexternalua",
+            "accept": "*/*",
+            "accept-encoding": "gzip, br",
+            "cdn-loop": "cloudflare; loops=1",
+            "cf-connecting-ip": "2a03:2880:ff:47::",
+            "cf-ipcountry": "US",
+            "cf-visitor": "{\"scheme\":\"https\"}"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "object": "instagram",
+            "entry": [
+              {
+                "time": 1792161769497,
+                "id": "17841400333153499",
+                "messaging": [
+                  {
+                    "sender": {
+                      "id": "2324742321656772"
+                    },
+                    "recipient": {
+                      "id": "17841400333153499"
+                    },
+                    "timestamp": 1792161768684,
+                    "message": {
+                      "mid": "aWdfZAG1faXRlbToxOklHTWVzc2FnZAUlEOjE3ODQxNDAwMzMzMTUzNDk5OjM0MDI4MjM2Njg0MTcxMDMwMTI0NDI1OTAwNjc0Mjk3ODY0MDc2NTozMzA1OTU0OTQ4NTYwODIyNjcwODUyMjQwMzI0MzIyOTE4NAZDZD",
+                      "text": "Olá. Bom dia"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "webhookUrl": "https://n8n.cgitech.com.br/webhook/32985298-bd5c-4428-b324-89638b06df29",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "versionId": "eca65acd-3046-4d42-abfd-9a430737ca62",
+  "activeVersionId": "c756041a-0185-4da4-b5d6-8bb2b90ed6ac",
+  "versionCounter": 223,
+  "triggerCount": 1,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-10-15T23:28:36.977Z",
+      "createdAt": "2026-10-15T23:28:36.977Z",
+      "role": "workflow:owner",
+      "workflowId": "H3TjPx76MJA7VKoj",
+      "projectId": "nvgaUSokEK38XWO8",
+      "project": {
+        "updatedAt": "2026-10-14T23:59:43.837Z",
+        "createdAt": "2026-10-14T21:53:54.872Z",
+        "id": "nvgaUSokEK38XWO8",
+        "name": "Iago Melo <iago@cgitech.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "customTelemetryTags": [],
+        "creatorId": "fab953a9-d408-4c18-8d4f-87a0df6cb3ab"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}

@@ -241,8 +241,13 @@ CREATE TABLE IF NOT EXISTS instagram_fila_mensagens (
         REFERENCES instagram_eventos(id) ON DELETE SET NULL,
     mensagem_id BIGINT
         REFERENCES instagram_mensagens(id) ON DELETE CASCADE,
-    conversa_id BIGINT NOT NULL
+    conversa_id BIGINT
         REFERENCES instagram_conversas(id) ON DELETE CASCADE,
+
+    sender_id VARCHAR(100),
+    id_mensagem VARCHAR(255),
+    mensagem TEXT,
+    "timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     tipo_tarefa VARCHAR(50) NOT NULL DEFAULT 'responder',
     status VARCHAR(30) NOT NULL DEFAULT 'pendente',
@@ -261,6 +266,9 @@ CREATE TABLE IF NOT EXISTS instagram_fila_mensagens (
         NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE INDEX IF NOT EXISTS idx_instagram_fila_sender_id
+    ON instagram_fila_mensagens (sender_id);
+
 CREATE INDEX IF NOT EXISTS idx_instagram_fila_processamento
     ON instagram_fila_mensagens
         (status, prioridade DESC, disponivel_em, id)
@@ -268,5 +276,20 @@ CREATE INDEX IF NOT EXISTS idx_instagram_fila_processamento
 
 CREATE INDEX IF NOT EXISTS idx_instagram_fila_conversa
     ON instagram_fila_mensagens (conversa_id, created_at DESC);
+
+-- =========================================================
+-- 8. HISTÓRICO DE MENSAGENS DO AGENTE DE IA (LANGCHAIN)
+-- Armazena os turnos de conversa do nó Postgres Chat Memory.
+-- =========================================================
+
+CREATE TABLE IF NOT EXISTS instagram_historico_mensagens (
+    id BIGSERIAL PRIMARY KEY,
+    session_id VARCHAR(255) NOT NULL,
+    message JSONB NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_instagram_historico_mensagens_session_id 
+    ON instagram_historico_mensagens (session_id);
 
 COMMIT;
